@@ -9,7 +9,7 @@ paths:
   checkpoint_dir: checkpoints
   data_dir: datasets
 preprocessing:
-  char_repeats: 3
+  char_repeats: 4
   languages:
   - ne
   - en_us
