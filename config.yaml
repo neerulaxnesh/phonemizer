@@ -1,94 +1,48 @@
+
+paths:
+  checkpoint_dir: checkpoints   # Directory to store model checkpoints and tensorboard, will be created if not existing.
+  data_dir: datasets            # Directory to store processed data, will be created if not existing.
+
+preprocessing:
+  languages: ['ne', 'de', 'en_us']    # All languages in the dataset.
+
+  # Text (grapheme) and phoneme symbols, either provide a string or list of strings.
+  # Symbols in the dataset will be filtered according to these lists!
+  text_symbols: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZäöüÄÖÜß'
+  phoneme_symbols: ['a', 'b', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ç', 'ð', 'ø', 'ŋ', 'œ', 'ɐ', 'ɑ', 'ɔ', 'ə', 'ɛ', 'ɝ', 'ɹ', 'ɡ', 'ɪ', 'ʁ', 'ʃ', 'ʊ', 'ʌ', 'ʏ', 'ʒ', 'ʔ', 'ˈ', 'ˌ', 'ː', '̃', '̍', '̥', '̩', '̯', '͡', 'θ']
+
+  char_repeats: 3                # Number of grapheme character repeats to allow for mapping to longer phoneme sequences.
+                                 # Set to 1 for autoreg_transformer.
+  lowercase: false                # Whether to lowercase the grapheme input.
+  n_val: 5000                    # Default number of validation data points if no explicit validation data is provided.
+
+
 model:
-  d_fft: 1024
+  type: 'transformer'            # Whether to use a forward transformer or autoregressive transformer model.
+                                 # Choices: ['transformer', 'autoreg_transformer']
   d_model: 512
+  d_fft: 1024
+  layers: 6
   dropout: 0.1
   heads: 4
-  layers: 6
-  type: transformer
-paths:
-  checkpoint_dir: checkpoints
-  data_dir: datasets
-preprocessing:
-  char_repeats: 4
-  languages:
-  - ne
-  - en_us
-  lowercase: true
-  n_val: 5000
-  phoneme_symbols:
-  - i
-  - u
-  - e
-  - o
-  - ax
-  - aa
-  - in
-  - en
-  - un
-  - axn
-  - aan
-  - ew
-  - oj
-  - ow
-  - axj
-  - axw
-  - aaj
-  - aaw
-  - ewn
-  - ojn
-  - own
-  - axjn
-  - axwn
-  - aajn
-  - aawn
-  - p
-  - b
-  - t
-  - d
-  - ts
-  - jh
-  - tt
-  - dd
-  - k
-  - g
-  - ph
-  - bh
-  - th
-  - dh
-  - tsh
-  - jhh
-  - tth
-  - ddh
-  - kh
-  - gh
-  - m
-  - n
-  - ng
-  - s
-  - h
-  - y
-  - r
-  - l
-  - w
-  - nn
-  - sil
-  - pau
-  text_symbols: "abcdefghijklmnopqrstuvwxyzH\u0906\u094D\u0916\u0949\u0927\u093E\u0960\
-    \u0917\u003A\u0901\u0921\u0937\u090A\u091F\u0922\u090B\u090F\u0923\u0939\u0929\u0930\
-    \u0903\u091A\u092C\u0926\u0908\u093F\u0902\u0928\u0924\u0918\u092E\u0925\u0931\
-    \u0950\u0932\u0920\u091B\u0910\u0947\u092F\u0943\u094C\u0935\u0936\u091C\u094B\
-    \ \u0948\u091D\u0938\u0914\u0941\u0909\u0919\u0905\u092B\u091E\u094A\u092A\u092D\
-    \u0915\u0942\u0940\u0907\u0913\u0967\u0969\u096B\u200D\u200C"
+
 training:
-  batch_size: 32
-  batch_size_val: 32
-  checkpoint_steps: 100000
-  epochs: 10
-  generate_steps: 500
-  learning_rate: 0.0001
-  n_generate_samples: 10
-  scheduler_plateau_factor: 0.5
-  scheduler_plateau_patience: 10
-  store_phoneme_dict_in_model: true
-  validate_steps: 500
-  warmup_steps: 100
+
+  # Hyperparams for learning rate and scheduler.
+  # The scheduler is reducing the lr on plateau of phoneme error rate (tested every n_generate_steps).
+
+  learning_rate: 0.0001              # Learning rate of Adam.
+  warmup_steps: 10000                # Linear increase of the lr from zero to the given lr within the given number of steps.
+  scheduler_plateau_factor: 0.5      # Factor to multiply learning rate on plateau.
+  scheduler_plateau_patience: 10     # Number of text generations with no improvement to tolerate.
+  batch_size: 32                     # Training batch size.
+  batch_size_val: 32                 # Validation batch size.
+  epochs: 500                        # Number of epochs to train.
+  generate_steps: 10000              # Interval of training steps to generate sample outputs. Also, at this step the phoneme and word
+                                     # error rates are calculated for the scheduler.
+  validate_steps: 10000              # Interval of training steps to validate the model
+                                     # (for the autoregressive model this is teacher-forced).
+  checkpoint_steps: 100000           # Interval of training steps to save the model.
+  n_generate_samples: 10             # Number of result samples to show on tensorboard.
+  store_phoneme_dict_in_model: true  # Whether to store the raw phoneme dict in the model.
+                                     # It will be loaded by the phonemizer object.
