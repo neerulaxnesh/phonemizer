@@ -9,11 +9,11 @@ paths:
   checkpoint_dir: checkpoints
   data_dir: datasets
 preprocessing:
-  char_repeats: 3
+  char_repeats: 1
   languages:
   - ne
   - en_us
-  lowercase: true
+  lowercase: false
   n_val: 5000
   phoneme_symbols:
   - i
