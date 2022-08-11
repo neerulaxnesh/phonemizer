@@ -8,7 +8,7 @@ preprocessing:
 
   # Text (grapheme) and phoneme symbols, either provide a string or list of strings.
   # Symbols in the dataset will be filtered according to these lists!
-  text_symbols: ['ँ','ं','ः','अ','आ','इ','ई','उ','ऊ','ऋ','ए','ऐ','ओ','औ','क','ख','ग','घ','ङ','च','छ','ज','झ','ञ','ट','ठ','ड','ढ','ण','त','थ','द','ध','न','प','फ','ब','भ','म','य','र','ल','व','श','ष','स','ह','ा','ि','ी','ु','ू','े','ै','ो','ौ','्','।','०','१','२','३','४','५','६','७','८','९']
+  text_symbols: ['ँ','ं','ः','अ','अं','आ','इ','ई','उ','ऊ','ऋ','ए','ऐ','ओ','औ','क','ख','ग','घ','ङ','च','छ','ज','झ','ञ','ट','ठ','ड','ढ','ण','त','थ','द','ध','न','प','फ','ब','भ','म','य','र','ल','व','श','ष','स','ह','ा','ि','ी','ु','ू','े','ै','ो','ौ','्','।','०','१','२','३','४','५','६','७','८','९']
   phoneme_symbols: ['i','u','e','o','ax','aa','in','en','un','axn','aan','ew','oj','ow','axj','axw','aaj','aaw','ewn','ojn','own','axjn','axwn','aajn','aawn','p','b','t','d','ts','jh','tt','dd','k','g','ph','bh','th','dh','tsh','jhh','tth','ddh','kh','gh','m','n','ng','s','h','y','r','l','w','nn','sil','pau']
 
   char_repeats: 3                # Number of grapheme character repeats to allow for mapping to longer phoneme sequences.
